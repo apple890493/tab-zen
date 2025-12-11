@@ -18,7 +18,6 @@ const Popup = () => {
   }
 
   const addCurrentTab = async () => {
-    console.log('addCurrentTab');
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab.id || !tab.url || !tab.title) return;
 
@@ -53,6 +52,8 @@ const Popup = () => {
     await loadState();
   }
 
+  const showAddAllowedDomain = !Boolean(state?.allowedDomains.length);
+
   const stopReading = async () => {
     await chrome.runtime.sendMessage({ type: MESSAGE_TYPES.RESET_QUEUE });
     await loadState();
@@ -65,7 +66,7 @@ const Popup = () => {
   return (
     <div className="popup">
       <header className="header">
-        <h1>🎯 Concentrate Queue</h1>
+        <h1>🧘 Tab Zen</h1>
       </header>
 
       {state?.mainTab ? (
@@ -112,19 +113,20 @@ const Popup = () => {
             </li>
           ))}
         </ul>
-
-        <div className="add-domain">
-          <input
-            type="text"
-            value={newDomain}
-            onChange={(e) => setNewDomain(e.target.value)}
-            placeholder="example.com"
-            onKeyDown={(e) => e.key === 'Enter' && addAllowedDomain()}
-          />
-          <button onClick={addAllowedDomain} className="btn-add">
-            Add
-          </button>
-        </div>
+        {showAddAllowedDomain && (
+          <div className="add-domain">
+            <input
+              type="text"
+              value={newDomain}
+              onChange={(e) => setNewDomain(e.target.value)}
+              placeholder="example.com"
+              onKeyDown={(e) => e.key === 'Enter' && addAllowedDomain()}
+            />
+            <button onClick={addAllowedDomain} className="btn-add">
+              Add
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

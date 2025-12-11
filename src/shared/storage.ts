@@ -1,6 +1,6 @@
 import { QueueState, DEFAULT_ALLOWED_DOMAINS } from '@/shared/types';
 
-const STORAGE_KEY = 'concentrateQueueState';
+const STORAGE_KEY = 'tabZenState';
 
 export const getQueueState = async (): Promise<QueueState> => {
   const result = await chrome.storage.local.get(STORAGE_KEY);

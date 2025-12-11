@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Concentrate Queue",
+  "name": "Tab Zen - Focus on Reading",
   "version": "0.1.0",
-  "description": "Stay focused by completing one tab before moving to the next",
+  "description": "Stay focused. Tab Zen forces you to finish reading before switching tabs.",
   "permissions": [
     "tabs",
     "storage",

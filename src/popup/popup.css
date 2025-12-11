@@ -128,8 +128,7 @@ body {
 .domain-list {
   list-style: none;
   margin-bottom: 12px;
-  height: 100px;
-  overflow-y: auto;
+  height: auto;
 }
 
 .domain-list li {

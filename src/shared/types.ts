@@ -40,8 +40,8 @@ export interface UnlockRequirements {
 
 export const DEFAULT_ALLOWED_DOMAINS = [
   'mail.google.com',
-  'slack.com',
-  'app.asana.com',
+  // 'slack.com',
+  // 'app.asana.com',
 ];
 
 export type MessageAction =
