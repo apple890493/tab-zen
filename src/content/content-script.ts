@@ -1,5 +1,5 @@
 import { MessageResponse, ModalType } from '@/shared/types';
-import { MESSAGE_TYPES, ACTIONS, DEFAULT_UNLOCK_REQUIREMENTS, UPDATE_INTERVAL, UPDATE_SECONDS, RESPONSE_TYPES, MODAL_TYPES } from '@/shared/constants';
+import { MESSAGE_TYPES, ACTIONS, DEFAULT_UNLOCK_REQUIREMENTS, UPDATE_INTERVAL, RESPONSE_TYPES, MODAL_TYPES } from '@/shared/constants';
 import { buildModal } from '@/content/modal-builder';
 
 let isTracking = false;
