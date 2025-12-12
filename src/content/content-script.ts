@@ -13,7 +13,7 @@ let lastScrollHeight = 0;
 let stabilityCheckInterval: number | null = null;
 
 // 監聽來自 background 的訊息
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   console.log('Content script received:', message);
   
   if (message.action === ACTIONS.START_TRACKING) {
