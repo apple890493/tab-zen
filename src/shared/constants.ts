@@ -24,8 +24,8 @@ export const ACTIONS = {
 } as const;
 
 export const DEFAULT_UNLOCK_REQUIREMENTS: UnlockRequirements = {
-  minTime: 20,
-  minScroll: 80,
+  minTime: 10,
+  minScroll: 85,
 };
 
 export const UPDATE_INTERVAL = 1000;

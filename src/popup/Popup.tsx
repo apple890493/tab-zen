@@ -70,12 +70,12 @@ const Popup = () => {
       </header>
 
       {state?.mainTab ? (
-        <div className="main-ta">
+        <div className="main-tab">
           <button onClick={stopReading} className="btn-stop">
             Stop Reading
           </button>
 
-          <h2 className="ta-title">{state.mainTab.title}</h2>
+          <h2 className="tab-title">{state.mainTab.title}</h2>
 
           {Object.keys(state.minorTabs).length > 0 && (
             <div className="minor-tabs">
@@ -89,7 +89,7 @@ const Popup = () => {
           )}
         </div>
       ) : (
-        <div className="no-ta">
+        <div className="no-tab">
           <p>No active reading task</p>
           <button onClick={addCurrentTab} className="btn-primary">
             Add current tab to queue

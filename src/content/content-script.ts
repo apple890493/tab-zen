@@ -85,6 +85,7 @@ const checkPageStability = () => {
 
 const startTimer = () => {
   startTime = Date.now();
+  let hasReachedMinTime = false;
 
   timerInterval = window.setInterval(() => {
     if (!isTracking) {
@@ -94,31 +95,38 @@ const startTimer = () => {
     
     timeSpent = Math.floor((Date.now() - startTime!) / UPDATE_INTERVAL);
   
+    if (!hasReachedMinTime && timeSpent >= requirements.minTime) {
+      hasReachedMinTime = true;
+      const currentScroll = getCurrentScrollPercent();
+      maxScroll = Math.max(maxScroll, currentScroll);
+    }
+
     if (timeSpent >= requirements.minTime && maxScroll >= requirements.minScroll) {
       handleUnlocked();
-    }
-    
-    if (timeSpent % UPDATE_SECONDS === 0) {
-      console.log(`Progress: ${timeSpent}s, ${maxScroll.toFixed(1)}%`);
     }
   }, UPDATE_INTERVAL);
 }
 
-const handleScroll = () => {
-  if (!isTracking || !pageStableAt) return;
-  
+const getCurrentScrollPercent = (): number => {
   const scrollTop = window.scrollY;
   const windowHeight = window.innerHeight;
   const docHeight = document.documentElement.scrollHeight;
   
   const scrollableHeight = docHeight - windowHeight;
-  const scrollPercent = scrollableHeight > 0 
+  return scrollableHeight > 0 
     ? (scrollTop / scrollableHeight) * 100 
     : 100;
+}
+
+const handleScroll = () => {
+  if (!isTracking || !pageStableAt) return;
   
+  if (timeSpent < requirements.minTime) return;
+  
+  const scrollPercent = getCurrentScrollPercent();
   maxScroll = Math.max(maxScroll, scrollPercent);
   
-  if (timeSpent >= requirements.minTime && maxScroll >= requirements.minScroll) {
+  if (maxScroll >= requirements.minScroll) {
     handleUnlocked();
   }
 }
