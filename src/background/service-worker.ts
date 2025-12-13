@@ -2,8 +2,7 @@ import {
   MessageAction,
   MessageResponse, 
   MainTab, 
-  MinorTab,
-  PendingModal
+  MinorTab
 } from '@/shared/types';
 import { 
   getQueueState, 
@@ -160,12 +159,6 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const state = await getQueueState();
   
-  if (state.pendingModal) {
-    await showPendingModal(activeInfo.tabId, state.pendingModal);
-    await updateQueueState(state => ({ ...state, pendingModal: null }));
-    return;
-  }
-  
   if (!state.mainTab) {
     console.log('No main tab set, allowing switch');
     return;
@@ -232,7 +225,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     try {
       chrome.tabs.sendMessage(currentState.mainTab.tabId, {
         action: ACTIONS.SHOW_TOAST,
-        message: `⏰ Please complete reading first\n\nProgress:\n• Time: ${progress.timeSpent}s / ${DEFAULT_UNLOCK_REQUIREMENTS.minTime}s\n• Scroll: ${Math.round(progress.maxScroll)}% / ${DEFAULT_UNLOCK_REQUIREMENTS.minScroll}%`,
+        message: `⏰ Please complete reading first\nProgress: ${Math.round(progress.maxScroll)}%`,
       });
     } catch (error) {
       console.error('Failed to send toast message:', error);
@@ -296,21 +289,6 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
   const state = await getQueueState();
   
   if (state.mainTab && state.mainTab.tabId === tabId) {
-    
-    const minorTabsList = Object.values(state.minorTabs);
-    
-    if (Boolean(minorTabsList.length)) {
-      await updateQueueState(state => ({
-        ...state,
-        MainTab: null,
-        pendingModal: {
-          type: 'incomplete',
-          minorTabs: minorTabsList,
-        },
-      }));
-      return;
-    } 
-
     await updateQueueState(state => ({
       ...state,
       mainTab: null,
@@ -331,13 +309,6 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
     return { ...state, minorTabs: newMinorTabs };
   });
 });
-
-const showPendingModal = async (tabId: number, modal: PendingModal) => {
-  chrome.tabs.sendMessage(tabId, {
-    action: ACTIONS.SHOW_INCOMPLETE_MODAL,
-    data: modal,
-  });
-}
 
 const selectNextMainTab = async (tabId: number): Promise<MessageResponse> => {
   const state = await getQueueState();

@@ -1,5 +1,5 @@
-import { MessageResponse, ModalType } from '@/shared/types';
-import { MESSAGE_TYPES, ACTIONS, DEFAULT_UNLOCK_REQUIREMENTS, UPDATE_INTERVAL, RESPONSE_TYPES, MODAL_TYPES } from '@/shared/constants';
+import { MessageResponse } from '@/shared/types';
+import { MESSAGE_TYPES, ACTIONS, DEFAULT_UNLOCK_REQUIREMENTS, UPDATE_INTERVAL, RESPONSE_TYPES } from '@/shared/constants';
 import { buildModal } from '@/content/modal-builder';
 
 let isTracking = false;
@@ -23,11 +23,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   
   if (message.action === ACTIONS.SHOW_TOAST) {
     showToast(message.message);
-    sendResponse({ success: true });
-  }
-  
-  if (message.action === ACTIONS.SHOW_INCOMPLETE_MODAL) {
-    showIncompleteModal(message.data);
     sendResponse({ success: true });
   }
   
@@ -177,7 +172,6 @@ const showCompletionModal = () => {
     
     const minorTabs = Object.values(response.state.minorTabs || {});
     const modal = createModal({
-      type: MODAL_TYPES.COMPLETED,
       minorTabs: minorTabs
     });
     
@@ -185,16 +179,7 @@ const showCompletionModal = () => {
   });
 }
 
-const showIncompleteModal = (data: any) => {
-  const modal = createModal({
-    type: MODAL_TYPES.INCOMPLETE,
-    minorTabs: data.minorTabs,
-  });
-  
-  document.body.appendChild(modal);
-}
-
-const createModal = (data: { type: ModalType; minorTabs: any[] }) => {
+const createModal = (data: { minorTabs: any[] }) => {
   return buildModal(data, {
     onSelectTab: (tabId: number) => {
       chrome.runtime.sendMessage({
@@ -219,12 +204,13 @@ const showToast = (message: string) => {
     top: 20px;
     right: 20px;
     background: #1f2937;
+    opacity: 0.9;
     color: white;
     padding: 16px 24px;
     border-radius: 8px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     z-index: 999999;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
     font-size: 14px;
     line-height: 1.5;
     white-space: pre-line;
@@ -237,6 +223,6 @@ const showToast = (message: string) => {
   setTimeout(() => {
     toast.style.transition = 'opacity 0.3s';
     toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
+    setTimeout(() => toast.remove(), 400);
   }, 3000);
 }

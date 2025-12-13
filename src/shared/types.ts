@@ -1,4 +1,4 @@
-import { MESSAGE_TYPES, RESPONSE_TYPES, MODAL_TYPES } from '@/shared/constants';
+import { MESSAGE_TYPES, RESPONSE_TYPES } from '@/shared/constants';
 
 export interface MainTab {
   tabId: number;
@@ -25,12 +25,6 @@ export interface QueueState {
   mainTab: MainTab | null;
   minorTabs: Record<string, MinorTab>;
   allowedDomains: string[];
-  pendingModal: PendingModal | null;
-}
-
-export interface PendingModal {
-  type: 'incomplete';
-  minorTabs: MinorTab[];
 }
 
 export interface UnlockRequirements {
@@ -57,5 +51,3 @@ export type MessageAction =
 export type MessageResponse =
   | { type: typeof RESPONSE_TYPES.SUCCESS; success: boolean; error?: string }
   | { type: typeof RESPONSE_TYPES.QUEUE_STATE; state: QueueState };
-
-export type ModalType = typeof MODAL_TYPES[keyof typeof MODAL_TYPES];

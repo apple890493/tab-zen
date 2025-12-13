@@ -1,8 +1,4 @@
-import { ModalType } from '@/shared/types';
-import { MODAL_TYPES } from '@/shared/constants';
-
 interface ModalData {
-  type: ModalType;
   minorTabs: Array<{ tabId: number; title?: string; url: string }>;
 }
 
@@ -24,7 +20,7 @@ const createOverlay = (): HTMLDivElement => {
     align-items: center;
     justify-content: center;
     z-index: 999999;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   `;
   return overlay;
 };
@@ -32,55 +28,34 @@ const createOverlay = (): HTMLDivElement => {
 const createModalContainer = (): HTMLDivElement => {
   const modal = document.createElement('div');
   modal.style.cssText = `
-    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #fff;
     border-radius: 12px;
-    padding: 32px;
+    padding: 24px;
     max-width: 500px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   `;
   return modal;
 };
 
-const createIcon = (type: ModalType): HTMLDivElement => {
-  const iconDiv = document.createElement('div');
-  iconDiv.style.cssText = `
-    text-align: center;
-    font-size: 48px;
-    margin-bottom: 16px;
-  `;
-  iconDiv.textContent = type === MODAL_TYPES.COMPLETED ? '🎉' : '⚠️';
-  return iconDiv;
-};
-
-const createTitle = (type: ModalType): HTMLHeadingElement => {
+const createTitle = (): HTMLHeadingElement => {
   const title = document.createElement('h2');
   title.style.cssText = `
-    margin: 0 0 8px 0;
     font-size: 24px;
-    text-align: center;
   `;
-  title.textContent = type === MODAL_TYPES.COMPLETED 
-    ? 'Reading completed!' 
-    : 'Reading not completed';
+  title.textContent = '🎉 Reading completed!';
   return title;
-};
-
-const createIncompleteDescription = (): HTMLParagraphElement => {
-  const description = document.createElement('p');
-  description.style.cssText = `
-    margin: 0 0 24px 0;
-    text-align: center;
-    color: #666;
-  `;
-  description.textContent = 'You closed the main tab before finishing.';
-  return description;
 };
 
 const createTabListTitle = (count: number): HTMLParagraphElement => {
   const title = document.createElement('p');
   title.style.cssText = `
-    margin: 16px 0 12px 0;
     font-weight: 500;
+    
   `;
   title.textContent = `You have ${count} related tab${count > 1 ? 's' : ''} to read:`;
   return title;
@@ -89,9 +64,9 @@ const createTabListTitle = (count: number): HTMLParagraphElement => {
 const createTabOption = (tab: { tabId: number; title?: string; url: string }): HTMLLabelElement => {
   const label = document.createElement('label');
   label.style.cssText = `
-    display: block;
+    display: flex;
+    align-items: center;
     padding: 12px;
-    margin-bottom: 8px;
     border: 1px solid #ddd;
     border-radius: 8px;
     cursor: pointer;
@@ -116,7 +91,13 @@ const createTabOption = (tab: { tabId: number; title?: string; url: string }): H
 const createTabList = (tabs: Array<{ tabId: number; title?: string; url: string }>): HTMLDivElement => {
   const container = document.createElement('div');
   container.id = 'tab-list';
-  container.style.marginBottom = '24px';
+  container.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 200px;
+    overflow-y: auto;
+  `;
 
   tabs.forEach(tab => {
     container.appendChild(createTabOption(tab));
@@ -125,7 +106,7 @@ const createTabList = (tabs: Array<{ tabId: number; title?: string; url: string 
   return container;
 };
 
-const createPrimaryButton = (type: ModalType): HTMLButtonElement => {
+const createPrimaryButton = (): HTMLButtonElement => {
   const button = document.createElement('button');
   button.id = 'start-reading';
   button.style.cssText = `
@@ -138,7 +119,7 @@ const createPrimaryButton = (type: ModalType): HTMLButtonElement => {
     font-weight: 500;
     cursor: pointer;
   `;
-  button.textContent = type === MODAL_TYPES.COMPLETED ? 'Start reading' : 'Continue with one';
+  button.textContent = 'Start reading';
   return button;
 };
 
@@ -159,7 +140,7 @@ const createSecondaryButton = (hasMinorTabs: boolean): HTMLButtonElement => {
   return button;
 };
 
-const createButtonContainer = (type: ModalType, hasMinorTabs: boolean): HTMLDivElement => {
+const createButtonContainer = (hasMinorTabs: boolean): HTMLDivElement => {
   const container = document.createElement('div');
   container.style.cssText = `
     display: flex;
@@ -168,7 +149,7 @@ const createButtonContainer = (type: ModalType, hasMinorTabs: boolean): HTMLDivE
   `;
 
   if (hasMinorTabs) {
-    container.appendChild(createPrimaryButton(type));
+    container.appendChild(createPrimaryButton());
   }
   container.appendChild(createSecondaryButton(hasMinorTabs));
 
@@ -208,19 +189,14 @@ export const buildModal = (data: ModalData, callbacks: ModalCallbacks): HTMLDivE
   const overlay = createOverlay();
   const modal = createModalContainer();
 
-  modal.appendChild(createIcon(data.type));
-  modal.appendChild(createTitle(data.type));
-
-  if (data.type === MODAL_TYPES.INCOMPLETE) {
-    modal.appendChild(createIncompleteDescription());
-  }
+  modal.appendChild(createTitle());
 
   if (Boolean(data.minorTabs.length)) {
     modal.appendChild(createTabListTitle(data.minorTabs.length));
     modal.appendChild(createTabList(data.minorTabs));
   }
 
-  modal.appendChild(createButtonContainer(data.type, Boolean(data.minorTabs.length)));
+  modal.appendChild(createButtonContainer(Boolean(data.minorTabs.length)));
 
   overlay.appendChild(modal);
   attachEventHandlers(overlay, modal, callbacks);
