@@ -10,7 +10,6 @@ export const getQueueState = async (): Promise<QueueState> => {
       mainTab: null,
       minorTabs: {},
       allowedDomains: DEFAULT_ALLOWED_DOMAINS,
-      pendingModal: null,
     };
     await saveQueueState(defaultState);
     return defaultState;

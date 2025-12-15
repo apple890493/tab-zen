@@ -88,7 +88,6 @@ const handleSetMainTab = async (
     ...state,
     mainTab: newMainTab,
     minorTabs: {},
-    pendingModal: null,
   }));
   
   chrome.tabs.sendMessage(tabId, { 
@@ -337,7 +336,6 @@ const selectNextMainTab = async (tabId: number): Promise<MessageResponse> => {
     ...state,
     mainTab: newMainTab,
     minorTabs: {},
-    pendingModal: null,
   }));
   
   await chrome.tabs.update(tabId, { active: true });
@@ -354,7 +352,6 @@ const resetQueue = async (): Promise<MessageResponse> => {
     ...state,
     mainTab: null,
     minorTabs: {},
-    pendingModal: null,
   }));
   
   return { type: RESPONSE_TYPES.SUCCESS, success: true };
