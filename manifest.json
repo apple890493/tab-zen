@@ -5,8 +5,7 @@
   "description": "Stay focused. Tab Zen forces you to finish reading before switching tabs.",
   "permissions": [
     "tabs",
-    "storage",
-    "scripting"
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
